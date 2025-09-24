@@ -27,6 +27,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 public class ChatSoundsPlugin extends Plugin
 {
 	private static final String CS_CLAN_MSG = "To talk in your clan's channel, start each line of chat with // or /c.";
+	private static final String CS_GIM_MSG = "To talk in your Ironman Group's channel, start each line of chat with //// or /g.";
 	private static final File CS_DIR = new File(RuneLite.RUNELITE_DIR.getPath() + File.separator + "chat-sounds");
 	private static final File CS_DEFAULT = new File(CS_DIR, "cs_default.mp3");
 	private static final File CS_PUBLIC = new File(CS_DIR, "cs_public.mp3");
@@ -34,13 +35,17 @@ public class ChatSoundsPlugin extends Plugin
 	private static final File CS_CHAT_CHANNEL = new File(CS_DIR,"cs_chat_channel.mp3");
 	private static final File CS_CLAN = new File(CS_DIR, "cs_clan.mp3");
 	private static final File CS_CLAN_BROADCAST = new File(CS_DIR, "cs_clan_broadcast.mp3");
+	private static final File CS_GIM = new File(CS_DIR, "cs_gim.mp3");
+	private static final File CS_GIM_BROADCAST = new File(CS_DIR, "cs_gim_broadcast.mp3");
 	private static final File[] CS_FILES = new File[]{
 		CS_DEFAULT,
 		CS_PUBLIC,
 		CS_PRIVATE,
 		CS_CHAT_CHANNEL,
 		CS_CLAN,
-		CS_CLAN_BROADCAST
+		CS_CLAN_BROADCAST,
+		CS_GIM,
+		CS_GIM_BROADCAST
 	};
 
 	@Inject
@@ -87,6 +92,14 @@ public class ChatSoundsPlugin extends Plugin
 			case CLAN_MESSAGE:
 				if (!event.getMessage().equals(CS_CLAN_MSG)) {
 					playSound(config.clanBroadcast(), CS_CLAN_BROADCAST);
+				}
+				break;
+			case CLAN_GIM_CHAT:
+				playSound(config.gimChat(), CS_GIM);
+				break;
+			case CLAN_GIM_MESSAGE:
+				if (!event.getMessage().equals(CS_GIM_MSG)) {
+					playSound(config.gimBroadcast(), CS_GIM_BROADCAST);
 				}
 				break;
 		}

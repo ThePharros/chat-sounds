@@ -64,6 +64,28 @@ public interface ChatSoundsConfig extends Config
 		return ChatSoundsMode.OFF;
 	}
 
+	@ConfigItem(
+		keyName = "gimChat",
+		name = "Group Ironman Chat",
+		description = "The sound effect to use when receiving a group ironman chat message.",
+		position = 6
+	)
+	default ChatSoundsMode gimChat()
+	{
+		return ChatSoundsMode.OFF;
+	}
+
+	@ConfigItem(
+		keyName = "gimBroadcast",
+		name = "Group Ironman Broadcast",
+		description = "The sound effect to use when receiving a group ironman broadcast message.",
+		position = 7
+	)
+	default ChatSoundsMode gimBroadcast()
+	{
+		return ChatSoundsMode.OFF;
+	}
+
 	@Range(
 		max = 100
 	)
