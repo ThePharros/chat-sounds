@@ -1,7 +1,6 @@
 package com.chatsounds;
 
 import com.google.inject.Provides;
-//import jaco.mp3.player.MP3Player;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,7 +11,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.inject.Inject;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-//import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
