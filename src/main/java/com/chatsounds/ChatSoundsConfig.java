@@ -1,6 +1,5 @@
 package com.chatsounds;
 
-import jdk.nashorn.internal.objects.Global;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
@@ -23,14 +22,14 @@ public interface ChatSoundsConfig extends Config
 
 	@ConfigItem(
 			keyName = "allChats",
-			name = "Global Toggle",
+			name = "Global Mute",
 			description = "Turns all sound effects either on or off.",
 			position = 1,
 			section = globalList
 	)
 	default GlobalSoundsMode allChats()
 	{
-		return GlobalSoundsMode.ON;
+		return GlobalSoundsMode.OFF;
 	}
 
 	@ConfigItem(

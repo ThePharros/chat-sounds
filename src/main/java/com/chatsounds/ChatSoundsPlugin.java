@@ -110,13 +110,14 @@ public class ChatSoundsPlugin extends Plugin
 		duelIgnored = null;
 	}
 
-
 	@Subscribe
 	public void onChatMessage(ChatMessage chatMessage)
 	{
 		Player player = client.getLocalPlayer();
 		String playerName = player.getName() != null ? player.getName() : "";
 		String cleanName = Text.sanitize(chatMessage.getName());
+		ChatMessageType type = chatMessage.getType();
+		String msg = Text.standardize(chatMessage.getMessage());
 
 		// Turn off sounds for yourself or when not logged in.
 		if (player == null ||
@@ -126,13 +127,11 @@ public class ChatSoundsPlugin extends Plugin
 		}
 
 		// Turn off sounds for global settings.
-		if (shouldIgnorePlayer(allIgnored, cleanName) || config.allChats() == GlobalSoundsMode.OFF) {
+		if (shouldIgnorePlayer(allIgnored, cleanName) || config.allChats() == GlobalSoundsMode.ON) {
 			return;
 		}
 
 		// Check for the various chat types in the game.
-		ChatMessageType type = chatMessage.getType();
-		String msg = Text.standardize(chatMessage.getMessage());
 		switch (type) {
 			case MODCHAT:
 			case PUBLICCHAT:
@@ -233,7 +232,7 @@ public class ChatSoundsPlugin extends Plugin
 
 	// Returns true if the message is from an ignored player in the chat's type.
 	private boolean shouldIgnorePlayer(List<String> ignoreList, String name) {
-        return ignoreList.contains(name.toLowerCase());
+		return ignoreList.stream().anyMatch(s -> s.equalsIgnoreCase(name));
     }
 
 	// Returns false if it is not a "join" or "left" message. If it is one, returns true if ignore is
