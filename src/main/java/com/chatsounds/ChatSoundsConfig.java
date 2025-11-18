@@ -209,7 +209,7 @@ public interface ChatSoundsConfig extends Config
 	)
 	default boolean chatChannelIgnoreJoinLeave()
 	{
-		return false;
+		return true;
 	}
 
 	@ConfigItem(
@@ -285,7 +285,7 @@ public interface ChatSoundsConfig extends Config
 	)
 	default boolean clanIgnoreJoinLeave()
 	{
-		return false;
+		return true;
 	}
 
 	@ConfigItem(
@@ -361,7 +361,7 @@ public interface ChatSoundsConfig extends Config
 	)
 	default boolean guestClanIgnoreJoinLeave()
 	{
-		return false;
+		return true;
 	}
 
 	@ConfigItem(
