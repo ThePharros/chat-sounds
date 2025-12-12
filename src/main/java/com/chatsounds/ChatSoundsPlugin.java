@@ -48,7 +48,7 @@ public class ChatSoundsPlugin extends Plugin
 	private static final File CS_PUBLIC = new File(CS_DIR, "cs_public.wav");
 	private static final File CS_PRIVATE = new File(CS_DIR, "cs_private.wav");
 	private static final File CS_CHAT_CHANNEL = new File(CS_DIR,"cs_chat_channel.wav");
-	private static final File CS_CHAT_CHANNEL_BROADCAST = new File(CS_DIR, "cs_chat_channel_broadcast.wave");
+	private static final File CS_CHAT_CHANNEL_BROADCAST = new File(CS_DIR, "cs_chat_channel_broadcast.wav");
 	private static final File CS_CLAN = new File(CS_DIR, "cs_clan.wav");
 	private static final File CS_CLAN_BROADCAST = new File(CS_DIR, "cs_clan_broadcast.wav");
 	private static final File CS_CLAN_GUEST = new File(CS_DIR, "cs_clan_guest.wav");
