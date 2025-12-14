@@ -157,7 +157,7 @@ public class ChatSoundsPlugin extends Plugin
 				break;
 
 			case FRIENDSCHATNOTIFICATION:
-				if (shouldAlertOnJoinOrLeft(msg, config.chatChannelIgnoreJoinLeave()) &&
+				if (shouldAlertBroadcastMessage(msg, config.chatChannelIgnoreJoinLeave()) &&
 						!msg.equals(CS_CHAT_CHANNEL_MSG_1) && !msg.startsWith(CS_CHAT_CHANNEL_MSG_2) &&
 						!msg.equals(CS_CHAT_CHANNEL_MSG_3)) {
 					playSound(config.chatChannelBroadcast(), CS_CHAT_CHANNEL_BROADCAST, config.chatChannelVolume());
@@ -172,7 +172,7 @@ public class ChatSoundsPlugin extends Plugin
 				break;
 
 			case CLAN_MESSAGE:
-				if (shouldAlertOnJoinOrLeft(msg, config.clanIgnoreJoinLeave()) && !msg.equals(CS_CLAN_MSG)) {
+				if (shouldAlertBroadcastMessage(msg, config.clanIgnoreJoinLeave()) && !msg.equals(CS_CLAN_MSG)) {
 					playSound(config.clanBroadcast(), CS_CLAN_BROADCAST, config.clanVolume());
 				}
 				break;
@@ -185,7 +185,7 @@ public class ChatSoundsPlugin extends Plugin
 				break;
 
 			case CLAN_GUEST_MESSAGE:
-				if (shouldAlertOnJoinOrLeft(msg, config.guestClanIgnoreJoinLeave()) &&
+				if (shouldAlertBroadcastMessage(msg, config.guestClanIgnoreJoinLeave()) &&
 						!msg.startsWith(CS_CLAN_GUEST_MSG_1) && !msg.endsWith(CS_CLAN_GUEST_MSG_2) &&
 						!msg.equals(CS_CLAN_GUEST_MSG_3)) {
 					playSound(config.guestClanBroadcast(), CS_CLAN_GUEST_BROADCAST, config.guestClanVolume());
@@ -235,14 +235,12 @@ public class ChatSoundsPlugin extends Plugin
 		return ignoreList.stream().anyMatch(s -> s.equalsIgnoreCase(name));
     }
 
-	// Returns false if it is not a "join" or "left" message. If it is one, returns true if ignore is
-	// not checked, false if it is checked.
-	private boolean shouldAlertOnJoinOrLeft(String text, boolean ignore) {
-		if (!text.endsWith(HAS_JOINED) && !text.endsWith(HAS_LEFT)) {
-			return false;
+	private boolean shouldAlertBroadcastMessage(String text, boolean ignoreJoinLeave) {
+		boolean isJoinOrLeft = text.endsWith(HAS_JOINED) || text.endsWith(HAS_LEFT);
+		if (isJoinOrLeft) {
+			return !ignoreJoinLeave; // Return false on ignored join/leave messages.
 		}
-
-        return !ignore;
+		return true; // Return true for other broadcast messages.
     }
 
 	private void initSoundFiles()
