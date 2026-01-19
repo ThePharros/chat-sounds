@@ -32,8 +32,6 @@ import net.runelite.client.util.Text;
 )
 public class ChatSoundsPlugin extends Plugin
 {
-	private static final String HAS_JOINED = " has joined.".toLowerCase();;
-	private static final String HAS_LEFT = " has left.".toLowerCase();;
 	private static final String CS_CHAT_CHANNEL_MSG_1 = "Attempting to join chat-channel...".toLowerCase();
 	private static final String CS_CHAT_CHANNEL_MSG_2 = "Now talking in chat-channel ".toLowerCase();
 	private static final String CS_CHAT_CHANNEL_MSG_3 = "To talk, start each line of chat with the / symbol.".toLowerCase();
@@ -157,8 +155,14 @@ public class ChatSoundsPlugin extends Plugin
 				break;
 
 			case FRIENDSCHATNOTIFICATION:
-				if (shouldAlertBroadcastMessage(msg, config.chatChannelIgnoreJoinLeave()) &&
-						!msg.equals(CS_CHAT_CHANNEL_MSG_1) && !msg.startsWith(CS_CHAT_CHANNEL_MSG_2) &&
+				BroadcastType chatChannelBroadcastType = BroadcastType.detect(msg);
+				if (chatChannelBroadcastType == BroadcastType.PLAYER_JOIN_LEAVE) {
+					if (config.chatChannelJoinLeave()) {
+						playSound(config.chatChannelBroadcast(), CS_CHAT_CHANNEL_BROADCAST, config.chatChannelVolume());
+					}
+					return;
+				}
+				else if (!msg.equals(CS_CHAT_CHANNEL_MSG_1) && !msg.startsWith(CS_CHAT_CHANNEL_MSG_2) &&
 						!msg.equals(CS_CHAT_CHANNEL_MSG_3)) {
 					playSound(config.chatChannelBroadcast(), CS_CHAT_CHANNEL_BROADCAST, config.chatChannelVolume());
 				}
@@ -172,7 +176,8 @@ public class ChatSoundsPlugin extends Plugin
 				break;
 
 			case CLAN_MESSAGE:
-				if (shouldAlertBroadcastMessage(msg, config.clanIgnoreJoinLeave()) && !msg.equals(CS_CLAN_MSG)) {
+				BroadcastType clanBroadcastType = BroadcastType.detect(msg);
+				if (shouldAlertClanBroadcastType(clanBroadcastType) && !msg.equals(CS_CLAN_MSG)) {
 					playSound(config.clanBroadcast(), CS_CLAN_BROADCAST, config.clanVolume());
 				}
 				break;
@@ -185,9 +190,10 @@ public class ChatSoundsPlugin extends Plugin
 				break;
 
 			case CLAN_GUEST_MESSAGE:
-				if (shouldAlertBroadcastMessage(msg, config.guestClanIgnoreJoinLeave()) &&
-						!msg.startsWith(CS_CLAN_GUEST_MSG_1) && !msg.endsWith(CS_CLAN_GUEST_MSG_2) &&
-						!msg.equals(CS_CLAN_GUEST_MSG_3)) {
+				// Guest clan only has join/leave broadcasts afaik?
+				BroadcastType guestBroadcastType = BroadcastType.detect(msg);
+				if (guestBroadcastType == BroadcastType.PLAYER_JOIN_LEAVE && config.guestClanJoinLeave() &&
+						!msg.equals(CS_CLAN_GUEST_MSG_1) && !msg.startsWith(CS_CLAN_GUEST_MSG_2) && !msg.equals(CS_CLAN_GUEST_MSG_3)) {
 					playSound(config.guestClanBroadcast(), CS_CLAN_GUEST_BROADCAST, config.guestClanVolume());
 				}
 				break;
@@ -235,13 +241,54 @@ public class ChatSoundsPlugin extends Plugin
 		return ignoreList.stream().anyMatch(s -> s.equalsIgnoreCase(name));
     }
 
-	private boolean shouldAlertBroadcastMessage(String text, boolean ignoreJoinLeave) {
-		boolean isJoinOrLeft = text.endsWith(HAS_JOINED) || text.endsWith(HAS_LEFT);
-		if (isJoinOrLeft) {
-			return !ignoreJoinLeave; // Return false on ignored join/leave messages.
+	private boolean shouldAlertClanBroadcastType(BroadcastType type)
+	{
+		switch (type)
+		{
+			case PLAYER_JOIN_LEAVE:
+				return config.clanJoinLeave();
+			case CLAN_INVITATION:
+				return config.clanNewMember();
+			case CLAN_EXPULSION:
+				return config.clanExpelledMember();
+			case RARE_DROP:
+				return config.clanRareDrop();
+			case RAID_LOOT:
+				return config.clanRaidLoot();
+			case REGULAR_DROP:
+				return config.clanRegularDrop();
+			case PET:
+				return config.clanPetDrop();
+			case COLLECTION_LOG:
+				return config.clanCollectionLog();
+			case LEVEL_UP:
+				return config.clanLevelUp();
+			case COMBAT_LEVEL_UP:
+				return config.clanCombatLevel();
+			case TOTAL_LEVEL_MILESTONE:
+				return config.clanTotalLevelMilestone();
+			case XP_MILESTONE:
+				return config.clanXpMilestone();
+			case QUEST_COMPLETE:
+				return config.clanQuest();
+			case ACHIEVEMENT_DIARY:
+				return config.clanDiary();
+			case COMBAT_ACHIEVEMENT:
+				return config.clanCombatAchievement();
+			case PERSONAL_BEST:
+				return config.clanPersonalBest();
+			case PLAYER_KILL:
+				return config.clanPvpKill();
+			case PLAYER_DEATH:
+				return config.clanPvpDeath();
+			case HARDCORE_DEATH:
+				return config.clanHardcoreDeath();
+			case LEAGUES_BROADCAST:
+				return config.clanLeagues();
+			default:
+				return false;
 		}
-		return true; // Return true for other broadcast messages.
-    }
+	}
 
 	private void initSoundFiles()
 	{
