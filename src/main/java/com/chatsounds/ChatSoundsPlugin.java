@@ -40,6 +40,7 @@ public class ChatSoundsPlugin extends Plugin
 	private static final String CS_CLAN_GUEST_MSG_2 = "To talk, start each line of chat with /// or /gc.".toLowerCase();
 	private static final String CS_CLAN_GUEST_MSG_3 = "Attempting to reconnect to guest channel automatically...".toLowerCase();
 	private static final String CS_GIM_MSG = "To talk in your Ironman Group's channel, start each line of chat with //// or /g.".toLowerCase();
+	private static final String CS_LEAGUES_MSG = "<img=22>";
 
 	private static final File CS_DIR = new File(RuneLite.RUNELITE_DIR.getPath() + File.separator + "chat-sounds");
 	private static final File CS_DEFAULT = new File(CS_DIR, "cs_default.wav");
@@ -176,6 +177,9 @@ public class ChatSoundsPlugin extends Plugin
 				break;
 
 			case CLAN_MESSAGE:
+				if (msg.contains(CS_LEAGUES_MSG) && !config.clanLeagues()) {
+					return;
+				}
 				BroadcastType clanBroadcastType = BroadcastType.detect(msg);
 				if (shouldAlertClanBroadcastType(clanBroadcastType) && !msg.equals(CS_CLAN_MSG)) {
 					playSound(config.clanBroadcast(), CS_CLAN_BROADCAST, config.clanVolume());
@@ -283,8 +287,6 @@ public class ChatSoundsPlugin extends Plugin
 				return config.clanPvpDeath();
 			case HARDCORE_DEATH:
 				return config.clanHardcoreDeath();
-			case LEAGUES_BROADCAST:
-				return config.clanLeagues();
 			default:
 				return false;
 		}

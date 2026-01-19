@@ -77,9 +77,6 @@ public enum BroadcastType
     ),
 
     // Other
-    LEAGUES_BROADCAST(MatchMode.ANY,
-            "<img=22>"
-    ),
     OTHER(MatchMode.ANY);
 
     private final MatchMode matchMode;
