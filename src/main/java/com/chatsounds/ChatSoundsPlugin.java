@@ -296,8 +296,10 @@ public class ChatSoundsPlugin extends Plugin
 				return config.clanQuest();
 			case ACHIEVEMENT_DIARY:
 				return config.clanDiary();
-			case COMBAT_ACHIEVEMENT:
-				return config.clanCombatAchievement();
+			case COMBAT_ACHIEVEMENT_TIER:
+				return config.clanCombatAchievementTier();
+			case COMBAT_ACHIEVEMENT_TASK:
+				return config.clanCombatAchievementTask();
 			case PERSONAL_BEST:
 				return config.clanPersonalBest();
 			case PLAYER_KILL:

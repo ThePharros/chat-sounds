@@ -445,13 +445,25 @@ public interface ChatSoundsConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "clanCombatAchievement",
-			name = "Combat achievement broadcasts",
-			description = "Play a sound for clan members completing a combat achievement.",
+			keyName = "clanCombatAchievementTier",
+			name = "Combat achievement tier broadcasts",
+			description = "Play a sound for clan members completing a combat achievement tier.",
 			position = 35,
 			section = clanChatList
 	)
-	default boolean clanCombatAchievement()
+	default boolean clanCombatAchievementTier()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "clanCombatAchievementTask",
+			name = "Combat achievement task broadcasts",
+			description = "Play a sound for clan members completing a combat achievement task.",
+			position = 35,
+			section = clanChatList
+	)
+	default boolean clanCombatAchievementTask()
 	{
 		return true;
 	}

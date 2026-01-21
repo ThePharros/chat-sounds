@@ -1,5 +1,7 @@
 package com.chatsounds;
 
+import java.util.regex.Pattern;
+
 public enum BroadcastType
 {
     // Social
@@ -13,15 +15,16 @@ public enum BroadcastType
     ),
 
     // Loot and collection log
-    REGULAR_DROP(MatchMode.ANY,
-            "received a drop"
-    ),
     RARE_DROP(MatchMode.ANY,
             "received a rare drop"
+    ),
+    REGULAR_DROP(MatchMode.ANY,
+        "received a drop"
     ),
     RAID_LOOT(MatchMode.ANY,
             "received special loot from a raid"
     ),
+
     PET(MatchMode.ANY,
             "has a funny feeling",
             "acquired something special",
@@ -32,10 +35,6 @@ public enum BroadcastType
     ),
 
     // Levels and XP
-    LEVEL_UP(MatchMode.ALL,
-            "has reached",
-            "level"
-    ),
     COMBAT_LEVEL_UP(MatchMode.ANY,
             "has reached combat level",
             "highest possible combat level"
@@ -49,28 +48,35 @@ public enum BroadcastType
             "has reached",
             "xp in"
     ),
+    LEVEL_UP(MatchMode.ALL,
+            "has reached",
+            "level"
+    ),
 
     // Achievements
     QUEST_COMPLETE(MatchMode.ANY,
             "has completed a quest"
     ),
-    ACHIEVEMENT_DIARY(MatchMode.ANY,
-            "achievement diary"
+    ACHIEVEMENT_DIARY(MatchMode.REGEX,
+            "has completed the (elite|hard|medium|easy)( [a-z ]+)? diary$"
     ),
-    COMBAT_ACHIEVEMENT(MatchMode.ANY,
-            "combat achievement",
-            "combat task"
+    COMBAT_ACHIEVEMENT_TIER(MatchMode.REGEX,
+            "has unlocked the (easy|medium|hard|elite|master) tier of rewards from combat achievements"
+    ),
+
+    COMBAT_ACHIEVEMENT_TASK(MatchMode.REGEX,
+            "has completed a[n]? (easy|medium|hard|elite|master) combat task: .+"
     ),
     PERSONAL_BEST(MatchMode.ANY,
             "achieved a new"
     ),
 
     // PvP & deaths
-    PLAYER_KILL(MatchMode.ANY,
-            "has defeated"
-    ),
     PLAYER_DEATH(MatchMode.ANY,
             "has been defeated by"
+    ),
+    PLAYER_KILL(MatchMode.ANY,
+            "has defeated"
     ),
     HARDCORE_DEATH(MatchMode.ANY,
             "lost their hardcore"
@@ -81,11 +87,20 @@ public enum BroadcastType
 
     private final MatchMode matchMode;
     private final String[] phrases;
+    private final Pattern pattern;
 
     BroadcastType(MatchMode matchMode, String... phrases)
     {
         this.matchMode = matchMode;
         this.phrases = phrases;
+        if (matchMode == MatchMode.REGEX && phrases.length > 0)
+        {
+            this.pattern = Pattern.compile(phrases[0], Pattern.CASE_INSENSITIVE);
+        }
+        else
+        {
+            this.pattern = null;
+        }
     }
 
     public boolean matches(String message)
@@ -101,18 +116,22 @@ public enum BroadcastType
         {
             for (String phrase : phrases)
             {
-                if (!m.contains(phrase))
+                if (!m.contains(phrase.toLowerCase()))
                 {
                     return false;
                 }
             }
             return true;
         }
+        else if (matchMode == MatchMode.REGEX)
+        {
+            return pattern != null && pattern.matcher(message).find();
+        }
         else // MatchMode.ANY
         {
             for (String phrase : phrases)
             {
-                if (m.contains(phrase))
+                if (m.contains(phrase.toLowerCase()))
                 {
                     return true;
                 }
@@ -133,5 +152,3 @@ public enum BroadcastType
         return OTHER;
     }
 }
-
-
