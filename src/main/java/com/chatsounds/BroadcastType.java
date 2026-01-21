@@ -5,8 +5,8 @@ import java.util.regex.Pattern;
 public enum BroadcastType
 {
     // Social
-    PLAYER_JOIN_LEAVE(MatchMode.ANY, " has joined.",
-            " has left."),
+    PLAYER_JOIN_LEAVE(MatchMode.ANY, "has joined",
+            "has left"),
     CLAN_INVITATION(MatchMode.ANY,
             "has been invited into the"
     ),
@@ -61,11 +61,11 @@ public enum BroadcastType
             "has completed the (elite|hard|medium|easy)( [a-z ]+)? diary$"
     ),
     COMBAT_ACHIEVEMENT_TIER(MatchMode.REGEX,
-            "has unlocked the (easy|medium|hard|elite|master) tier of rewards from combat achievements"
+            "has unlocked the (easy|medium|hard|elite|master|grandmaster) tier of rewards from combat achievements"
     ),
 
     COMBAT_ACHIEVEMENT_TASK(MatchMode.REGEX,
-            "has completed a[n]? (easy|medium|hard|elite|master) combat task: .+"
+            "has completed a[n]? (easy|medium|hard|elite|master|grandmaster) combat task.+"
     ),
     PERSONAL_BEST(MatchMode.ANY,
             "achieved a new"

@@ -45,7 +45,7 @@ public class ChatSoundsPlugin extends Plugin
 	private static final String CS_LEAGUES_MSG = "<img=22>";
 	private static final Pattern PLAYER_PREFIX =
 			Pattern.compile(
-					"^.+?\\s+(has|have|been|achieved|acquired|reached|received|lost|unlocked|completed)\\b",
+					"^.+\\s+(has|have|been|achieved|acquired|reached|received|lost|unlocked|completed)\\b",
 					Pattern.CASE_INSENSITIVE
 			);
 
@@ -123,8 +123,10 @@ public class ChatSoundsPlugin extends Plugin
 		String playerName = player.getName() != null ? player.getName() : "";
 		String cleanName = Text.sanitize(chatMessage.getName());
 		ChatMessageType type = chatMessage.getType();
+
 		String msg = Text.standardize(chatMessage.getMessage());
-		String strippedMsg = stripPlayerName(msg);
+		String cleanMsg = stripTags(msg);
+		String strippedMsg = stripPlayerName(cleanMsg);
 
 		// Turn off sounds for yourself or when not logged in.
 		if (player == null ||
@@ -247,6 +249,13 @@ public class ChatSoundsPlugin extends Plugin
 			updateLists();
 		}
 	}
+
+	private String stripTags(String message)
+	{
+		// Remove any <...> tags
+		return message.replaceAll("<[^>]*>", "");
+	}
+
 
 	private String stripPlayerName(String message)
 	{
