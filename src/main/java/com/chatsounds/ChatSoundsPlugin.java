@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -41,6 +43,11 @@ public class ChatSoundsPlugin extends Plugin
 	private static final String CS_CLAN_GUEST_MSG_3 = "Attempting to reconnect to guest channel automatically...".toLowerCase();
 	private static final String CS_GIM_MSG = "To talk in your Ironman Group's channel, start each line of chat with //// or /g.".toLowerCase();
 	private static final String CS_LEAGUES_MSG = "<img=22>";
+	private static final Pattern PLAYER_PREFIX =
+			Pattern.compile(
+					"^.+?\\s+(has|have|been|achieved|acquired|reached|received|lost|unlocked|completed)\\b",
+					Pattern.CASE_INSENSITIVE
+			);
 
 	private static final File CS_DIR = new File(RuneLite.RUNELITE_DIR.getPath() + File.separator + "chat-sounds");
 	private static final File CS_DEFAULT = new File(CS_DIR, "cs_default.wav");
@@ -117,6 +124,7 @@ public class ChatSoundsPlugin extends Plugin
 		String cleanName = Text.sanitize(chatMessage.getName());
 		ChatMessageType type = chatMessage.getType();
 		String msg = Text.standardize(chatMessage.getMessage());
+		String strippedMsg = stripPlayerName(msg);
 
 		// Turn off sounds for yourself or when not logged in.
 		if (player == null ||
@@ -156,7 +164,7 @@ public class ChatSoundsPlugin extends Plugin
 				break;
 
 			case FRIENDSCHATNOTIFICATION:
-				BroadcastType chatChannelBroadcastType = BroadcastType.detect(msg);
+				BroadcastType chatChannelBroadcastType = BroadcastType.detect(strippedMsg);
 				if (chatChannelBroadcastType == BroadcastType.PLAYER_JOIN_LEAVE) {
 					if (config.chatChannelJoinLeave()) {
 						playSound(config.chatChannelBroadcast(), CS_CHAT_CHANNEL_BROADCAST, config.chatChannelVolume());
@@ -180,7 +188,7 @@ public class ChatSoundsPlugin extends Plugin
 				if (msg.contains(CS_LEAGUES_MSG) && !config.clanLeagues()) {
 					return;
 				}
-				BroadcastType clanBroadcastType = BroadcastType.detect(msg);
+				BroadcastType clanBroadcastType = BroadcastType.detect(strippedMsg);
 				if (shouldAlertClanBroadcastType(clanBroadcastType) && !msg.equals(CS_CLAN_MSG)) {
 					playSound(config.clanBroadcast(), CS_CLAN_BROADCAST, config.clanVolume());
 				}
@@ -195,7 +203,7 @@ public class ChatSoundsPlugin extends Plugin
 
 			case CLAN_GUEST_MESSAGE:
 				// Guest clan only has join/leave broadcasts afaik?
-				BroadcastType guestBroadcastType = BroadcastType.detect(msg);
+				BroadcastType guestBroadcastType = BroadcastType.detect(strippedMsg);
 				if (guestBroadcastType == BroadcastType.PLAYER_JOIN_LEAVE && config.guestClanJoinLeave() &&
 						!msg.equals(CS_CLAN_GUEST_MSG_1) && !msg.startsWith(CS_CLAN_GUEST_MSG_2) && !msg.equals(CS_CLAN_GUEST_MSG_3)) {
 					playSound(config.guestClanBroadcast(), CS_CLAN_GUEST_BROADCAST, config.guestClanVolume());
@@ -239,6 +247,17 @@ public class ChatSoundsPlugin extends Plugin
 			updateLists();
 		}
 	}
+
+	private String stripPlayerName(String message)
+	{
+		Matcher m = PLAYER_PREFIX.matcher(message);
+		if (m.find())
+		{
+			return message.substring(m.start(1));
+		}
+		return message;
+	}
+
 
 	// Returns true if the message is from an ignored player in the chat's type.
 	private boolean shouldIgnorePlayer(List<String> ignoreList, String name) {
