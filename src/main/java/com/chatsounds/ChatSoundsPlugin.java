@@ -45,7 +45,7 @@ public class ChatSoundsPlugin extends Plugin
 	private static final String CS_LEAGUES_MSG = "<img=22>";
 	private static final Pattern PLAYER_PREFIX =
 			Pattern.compile(
-					"^.+\\s+(has|have|been|achieved|acquired|reached|received|lost|unlocked|completed)\\b",
+					"^.+?\\s+(has|have|been|achieved|acquired|reached|received|lost|unlocked|completed)\\b",
 					Pattern.CASE_INSENSITIVE
 			);
 

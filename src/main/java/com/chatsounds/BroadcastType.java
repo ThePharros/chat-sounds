@@ -58,14 +58,14 @@ public enum BroadcastType
             "has completed a quest"
     ),
     ACHIEVEMENT_DIARY(MatchMode.REGEX,
-            "has completed the (elite|hard|medium|easy)( [a-z ]+)? diary$"
+            "has completed the .* diary"
     ),
     COMBAT_ACHIEVEMENT_TIER(MatchMode.REGEX,
-            "has unlocked the (easy|medium|hard|elite|master|grandmaster) tier of rewards from combat achievements"
+            "has unlocked the .* tier of rewards from combat achievements"
     ),
 
     COMBAT_ACHIEVEMENT_TASK(MatchMode.REGEX,
-            "has completed a[n]? (easy|medium|hard|elite|master|grandmaster) combat task.+"
+            "has completed a[n]? .* combat task"
     ),
     PERSONAL_BEST(MatchMode.ANY,
             "achieved a new"
