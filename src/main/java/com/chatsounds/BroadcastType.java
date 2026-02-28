@@ -24,6 +24,9 @@ public enum BroadcastType
     RAID_LOOT(MatchMode.ANY,
             "received special loot from a raid"
     ),
+    CLUE_LOOT(MatchMode.ANY,
+            "received a clue item"
+    ),
 
     PET(MatchMode.ANY,
             "has a funny feeling",

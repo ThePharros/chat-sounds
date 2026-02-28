@@ -349,6 +349,18 @@ public interface ChatSoundsConfig extends Config
 	}
 
 	@ConfigItem(
+			keyName = "clanClueLoot",
+			name = "Clue loot broadcasts",
+			description = "Play a sound for users receiving clue loot.",
+			position = 27,
+			section = clanChatList
+	)
+	default boolean clanClueLoot()
+	{
+		return true;
+	}
+
+	@ConfigItem(
 			keyName = "clanPetDrop",
 			name = "Pet drop broadcasts",
 			description = "Play a sound for users receiving a pet drop.",

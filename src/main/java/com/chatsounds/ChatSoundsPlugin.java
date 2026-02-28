@@ -191,6 +191,8 @@ public class ChatSoundsPlugin extends Plugin
 					return;
 				}
 				BroadcastType clanBroadcastType = BroadcastType.detect(strippedMsg);
+				log.debug("Chat Sounds: strippedMsg: " + strippedMsg);
+				log.debug("Chat Sounds: clanBroadcastType: " + clanBroadcastType);
 				if (shouldAlertClanBroadcastType(clanBroadcastType) && !msg.equals(CS_CLAN_MSG)) {
 					playSound(config.clanBroadcast(), CS_CLAN_BROADCAST, config.clanVolume());
 				}
@@ -289,6 +291,8 @@ public class ChatSoundsPlugin extends Plugin
 				return config.clanRaidLoot();
 			case REGULAR_DROP:
 				return config.clanRegularDrop();
+			case CLUE_LOOT:
+				return config.clanClueLoot();
 			case PET:
 				return config.clanPetDrop();
 			case COLLECTION_LOG:
