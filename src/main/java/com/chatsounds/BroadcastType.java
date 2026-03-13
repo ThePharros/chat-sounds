@@ -5,8 +5,10 @@ import java.util.regex.Pattern;
 public enum BroadcastType
 {
     // Social
-    PLAYER_JOIN_LEAVE(MatchMode.ANY, "has joined",
-            "has left"),
+    PLAYER_JOIN_LEAVE(MatchMode.ANY,
+			"has joined",
+            "has left"
+	),
     CLAN_INVITATION(MatchMode.ANY,
             "has been invited into the"
     ),
@@ -19,7 +21,7 @@ public enum BroadcastType
             "received a rare drop"
     ),
     REGULAR_DROP(MatchMode.ANY,
-        "received a drop"
+            "received a drop"
     ),
     RAID_LOOT(MatchMode.ANY,
             "received special loot from a raid"
