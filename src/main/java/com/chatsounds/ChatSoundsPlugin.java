@@ -220,7 +220,11 @@ public class ChatSoundsPlugin extends Plugin
 				break;
 
 			case CLAN_GIM_MESSAGE:
-				if (!msg.equals(CS_GIM_MSG)) {
+				if (msg.contains(CS_LEAGUES_MSG) && !config.gimLeagues()) {
+					return;
+				}
+				BroadcastType gimBroadcastType = BroadcastType.detect(strippedMsg);
+				if (shouldAlertGimBroadcastType(gimBroadcastType) && !msg.equals(CS_GIM_MSG)) {
 					playSound(config.gimBroadcast(), CS_GIM_BROADCAST, config.groupIronVolume());
 				}
 				break;
@@ -312,6 +316,49 @@ public class ChatSoundsPlugin extends Plugin
 				return config.clanPvpDeath();
 			case HARDCORE_DEATH:
 				return config.clanHardcoreDeath();
+			default:
+				return false;
+		}
+	}
+
+	private boolean shouldAlertGimBroadcastType(BroadcastType type)
+	{
+		switch (type)
+		{
+			case RARE_DROP:
+				return config.gimRareDrop();
+			case RAID_LOOT:
+				return config.gimRaidLoot();
+			case REGULAR_DROP:
+				return config.gimRegularDrop();
+			case CLUE_LOOT:
+				return config.gimClueLoot();
+			case PET:
+				return config.gimPetDrop();
+			case COLLECTION_LOG:
+				return config.gimCollectionLog();
+			case LEVEL_UP:
+				return config.gimLevelUp();
+			case COMBAT_LEVEL_UP:
+				return config.gimCombatLevel();
+			case TOTAL_LEVEL_MILESTONE:
+				return config.gimTotalLevelMilestone();
+			case XP_MILESTONE:
+				return config.gimXpMilestone();
+			case QUEST_COMPLETE:
+				return config.gimQuest();
+			case ACHIEVEMENT_DIARY:
+				return config.gimDiary();
+			case COMBAT_ACHIEVEMENT_TIER:
+				return config.gimCombatAchievementTier();
+			case COMBAT_ACHIEVEMENT_TASK:
+				return config.gimCombatAchievementTask();
+			case PERSONAL_BEST:
+				return config.gimPersonalBest();
+			case PLAYER_KILL:
+				return config.gimPvpKill();
+			case PLAYER_DEATH:
+				return config.gimPvpDeath();
 			default:
 				return false;
 		}

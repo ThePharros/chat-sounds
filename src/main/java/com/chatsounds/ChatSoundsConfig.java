@@ -681,10 +681,226 @@ public interface ChatSoundsConfig extends Config
 	}
 
 	@ConfigItem(
+			keyName = "gimRegularDrop",
+			name = "Regular drop broadcasts",
+			description = "Play a sound for group members receiving a regular drop.",
+			position = 52,
+			section = groupList
+	)
+	default boolean gimRegularDrop()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "gimRareDrop",
+			name = "Rare drop broadcasts",
+			description = "Play a sound for group members receiving a rare drop.",
+			position = 53,
+			section = groupList
+	)
+	default boolean gimRareDrop()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "gimRaidLoot",
+			name = "Raid loot broadcasts",
+			description = "Play a sound for group members receiving raid loot.",
+			position = 54,
+			section = groupList
+	)
+	default boolean gimRaidLoot()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "gimClueLoot",
+			name = "Clue loot broadcasts",
+			description = "Play a sound for group members receiving clue loot.",
+			position = 55,
+			section = groupList
+	)
+	default boolean gimClueLoot()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "gimPetDrop",
+			name = "Pet drop broadcasts",
+			description = "Play a sound for group members receiving a pet drop.",
+			position = 56,
+			section = groupList
+	)
+	default boolean gimPetDrop()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "gimCollectionLog",
+			name = "Collection log broadcasts",
+			description = "Play a sound for group members receiving a new collection log item.",
+			position = 57,
+			section = groupList
+	)
+	default boolean gimCollectionLog()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "gimLevelUp",
+			name = "Level up broadcasts",
+			description = "Play a sound for group members leveling up.",
+			position = 58,
+			section = groupList
+	)
+	default boolean gimLevelUp()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "gimCombatLevel",
+			name = "Combat level broadcasts",
+			description = "Play a sound for group members gaining a combat level.",
+			position = 59,
+			section = groupList
+	)
+	default boolean gimCombatLevel()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "gimTotalLevelMilestone",
+			name = "Total level broadcasts",
+			description = "Play a sound for group members reaching a new total level milestone.",
+			position = 60,
+			section = groupList
+	)
+	default boolean gimTotalLevelMilestone()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "gimXpMilestone",
+			name = "XP milestone broadcasts",
+			description = "Play a sound for group members reaching an XP milestone.",
+			position = 61,
+			section = groupList
+	)
+	default boolean gimXpMilestone()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "gimQuest",
+			name = "Quest broadcasts",
+			description = "Play a sound for group members completing a quest.",
+			position = 62,
+			section = groupList
+	)
+	default boolean gimQuest()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "gimDiary",
+			name = "Achievement diary broadcasts",
+			description = "Play a sound for group members completing an achievement diary task.",
+			position = 63,
+			section = groupList
+	)
+	default boolean gimDiary()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "gimCombatAchievementTier",
+			name = "Combat achievement tier broadcasts",
+			description = "Play a sound for group members completing a combat achievement tier.",
+			position = 64,
+			section = groupList
+	)
+	default boolean gimCombatAchievementTier()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "gimCombatAchievementTask",
+			name = "Combat achievement task broadcasts",
+			description = "Play a sound for group members completing a combat achievement task.",
+			position = 65,
+			section = groupList
+	)
+	default boolean gimCombatAchievementTask()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "gimPersonalBest",
+			name = "Personal best broadcasts",
+			description = "Play a sound for group members achieving a new personal best.",
+			position = 66,
+			section = groupList
+	)
+	default boolean gimPersonalBest()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "gimPvpKill",
+			name = "PvP kill broadcasts",
+			description = "Play a sound for group members killing another player.",
+			position = 67,
+			section = groupList
+	)
+	default boolean gimPvpKill()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "gimPvpDeath",
+			name = "PvP death broadcasts",
+			description = "Play a sound for group members dying to another player.",
+			position = 68,
+			section = groupList
+	)
+	default boolean gimPvpDeath()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "gimLeagues",
+			name = "Leagues broadcasts",
+			description = "Include leagues broadcasts.",
+			position = 69,
+			section = groupList
+	)
+	default boolean gimLeagues()
+	{
+		return true;
+	}
+
+	@ConfigItem(
 			keyName = "groupIronIgnorePlayers",
 			name = "Ignore player names",
 			description = "A comma-separated list of player names to never play a sound for.",
-			position = 52,
+			position = 70,
 			section = groupList
 	)
 	default String groupIronIgnorePlayersList()
@@ -698,7 +914,7 @@ public interface ChatSoundsConfig extends Config
 	@ConfigSection(
 			name = "Trade Requests",
 			description = "Settings for trade requests.",
-			position = 53
+			position = 71
 	)
 	String tradeList = "tradeList";
 
@@ -706,7 +922,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "tradeRequest",
 			name = "Trade Request",
 			description = "The sound effect to use when receiving a trade request.",
-			position = 54,
+			position = 72,
 			section = tradeList
 	)
 	default ChatSoundsMode tradeRequest()
@@ -724,7 +940,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "tradeVolume",
 			name = "Trade Volume",
 			description = "Sets the volume of the chat message sound effect.",
-			position = 55,
+			position = 73,
 			section = tradeList
 	)
 	default int tradeVolume()
@@ -736,7 +952,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "tradeIgnorePlayers",
 			name = "Ignore player names",
 			description = "A comma-separated list of player names to never play a sound for.",
-			position = 56,
+			position = 74,
 			section = tradeList
 	)
 	default String tradeIgnorePlayersList()
@@ -750,7 +966,7 @@ public interface ChatSoundsConfig extends Config
 	@ConfigSection(
 			name = "Duel Requests",
 			description = "Settings for duel requests.",
-			position = 57
+			position = 75
 	)
 	String duelList = "duelList";
 
@@ -758,7 +974,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "duelRequest",
 			name = "Duel Request",
 			description = "The sound effect to use when receiving a duel request.",
-			position = 58,
+			position = 76,
 			section = duelList
 	)
 	default ChatSoundsMode duelRequest()
@@ -776,7 +992,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "duelVolume",
 			name = "Duel Volume",
 			description = "Sets the volume of the chat message sound effect.",
-			position = 59,
+			position = 77,
 			section = duelList
 	)
 	default int duelVolume()
@@ -788,7 +1004,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "duelIgnorePlayers",
 			name = "Ignore player names",
 			description = "A comma-separated list of player names to never play a sound for.",
-			position = 60,
+			position = 78,
 			section = duelList
 	)
 	default String duelIgnorePlayersList()
