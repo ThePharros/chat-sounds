@@ -125,7 +125,7 @@ public class ChatSoundsPlugin extends Plugin
 		ChatMessageType type = chatMessage.getType();
 
 		String msg = Text.standardize(chatMessage.getMessage());
-		String cleanMsg = stripTags(msg);
+		String cleanMsg = Text.removeTags(msg);
 		String strippedMsg = stripPlayerName(cleanMsg);
 
 		// Turn off sounds for yourself or when not logged in.
@@ -249,13 +249,6 @@ public class ChatSoundsPlugin extends Plugin
 			updateLists();
 		}
 	}
-
-	private String stripTags(String message)
-	{
-		// Remove any <...> tags
-		return message.replaceAll("<[^>]*>", "");
-	}
-
 
 	private String stripPlayerName(String message)
 	{
