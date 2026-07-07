@@ -566,7 +566,7 @@ public interface ChatSoundsConfig extends Config
 	@ConfigSection(
 			name = "Guest Clan Chat",
 			description = "Settings for guest clan chats.",
-			position = 44
+			position = 45
 	)
 	String guestClanList = "guestClanList";
 
@@ -574,7 +574,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "guestClanChat",
 			name = "Guest Clan Chat",
 			description = "The sound effect to use when receiving a guest clan chat message.",
-			position = 45,
+			position = 46,
 			section = guestClanList
 	)
 	default ChatSoundsMode guestClanChat()
@@ -586,7 +586,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "guestClanBroadcast",
 			name = "Guest Clan Broadcast",
 			description = "The sound effect to use when receiving a guest clan broadcast message.",
-			position = 46,
+			position = 47,
 			section = guestClanList
 	)
 	default ChatSoundsMode guestClanBroadcast()
@@ -604,7 +604,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "guestClanChannelVolume",
 			name = "Volume",
 			description = "Sets the volume of the chat message sound effect.",
-			position = 47,
+			position = 48,
 			section = guestClanList
 	)
 	default int guestClanVolume()
@@ -616,7 +616,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "guestClanJoinLeave",
 			name = "Join/leave broadcasts",
 			description = "Play a sound for users joining or leaving the guest clan chat.",
-			position = 48,
+			position = 49,
 			section = guestClanList
 	)
 	default boolean guestClanJoinLeave()
@@ -628,7 +628,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "guestClanIgnorePlayers",
 			name = "Ignore player names",
 			description = "A comma-separated list of player names to never play a sound for.",
-			position = 49,
+			position = 50,
 			section = guestClanList
 	)
 	default String guestClanIgnorePlayersList()
@@ -642,7 +642,7 @@ public interface ChatSoundsConfig extends Config
 	@ConfigSection(
 			name = "Group Ironman Chat",
 			description = "Settings for group ironman chats.",
-			position = 50
+			position = 51
 	)
 	String groupList = "groupList";
 
@@ -650,7 +650,7 @@ public interface ChatSoundsConfig extends Config
 		keyName = "gimChat",
 		name = "Group Ironman Chat",
 		description = "The sound effect to use when receiving a group ironman chat message.",
-		position = 51,
+		position = 52,
 		section = groupList
 	)
 	default ChatSoundsMode gimChat()
@@ -662,7 +662,7 @@ public interface ChatSoundsConfig extends Config
 		keyName = "gimBroadcast",
 		name = "Group Ironman Broadcast",
 		description = "The sound effect to use when receiving a group ironman broadcast message.",
-		position = 52,
+		position = 53,
 		section = groupList
 	)
 	default ChatSoundsMode gimBroadcast()
@@ -680,7 +680,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "groupIronVolume",
 			name = "Volume",
 			description = "Sets the volume of the chat message sound effect.",
-			position = 53,
+			position = 54,
 			section = groupList
 	)
 	default int groupIronVolume()
@@ -692,7 +692,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "groupIronIgnorePlayers",
 			name = "Ignore player names",
 			description = "A comma-separated list of player names to never play a sound for.",
-			position = 54,
+			position = 55,
 			section = groupList
 	)
 	default String groupIronIgnorePlayersList()
@@ -703,7 +703,7 @@ public interface ChatSoundsConfig extends Config
 	@ConfigSection(
 			name = "Group Ironman Toggles",
 			description = "Individual toggles for group ironman.",
-			position = 55,
+			position = 56,
 			closedByDefault = true
 	)
 	String groupIronmanToggles = "groupIronmanToggles";
@@ -712,7 +712,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "gimRegularDrop",
 			name = "Regular drop broadcasts",
 			description = "Play a sound for group members receiving a regular drop.",
-			position = 56,
+			position = 57,
 			section = groupIronmanToggles
 	)
 	default boolean gimRegularDrop()
@@ -724,7 +724,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "gimRareDrop",
 			name = "Rare drop broadcasts",
 			description = "Play a sound for group members receiving a rare drop.",
-			position = 57,
+			position = 58,
 			section = groupIronmanToggles
 	)
 	default boolean gimRareDrop()
@@ -736,7 +736,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "gimRaidLoot",
 			name = "Raid loot broadcasts",
 			description = "Play a sound for group members receiving raid loot.",
-			position = 58,
+			position = 59,
 			section = groupIronmanToggles
 	)
 	default boolean gimRaidLoot()
@@ -748,7 +748,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "gimClueLoot",
 			name = "Clue loot broadcasts",
 			description = "Play a sound for group members receiving clue loot.",
-			position = 59,
+			position = 60,
 			section = groupIronmanToggles
 	)
 	default boolean gimClueLoot()
@@ -760,7 +760,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "gimPetDrop",
 			name = "Pet drop broadcasts",
 			description = "Play a sound for group members receiving a pet drop.",
-			position = 60,
+			position = 61,
 			section = groupIronmanToggles
 	)
 	default boolean gimPetDrop()
@@ -772,7 +772,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "gimCollectionLog",
 			name = "Collection log broadcasts",
 			description = "Play a sound for group members receiving a new collection log item.",
-			position = 61,
+			position = 62,
 			section = groupIronmanToggles
 	)
 	default boolean gimCollectionLog()
@@ -784,7 +784,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "gimLevelUp",
 			name = "Level up broadcasts",
 			description = "Play a sound for group members leveling up.",
-			position = 62,
+			position = 63,
 			section = groupIronmanToggles
 	)
 	default boolean gimLevelUp()
@@ -796,7 +796,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "gimCombatLevel",
 			name = "Combat level broadcasts",
 			description = "Play a sound for group members gaining a combat level.",
-			position = 63,
+			position = 64,
 			section = groupIronmanToggles
 	)
 	default boolean gimCombatLevel()
@@ -808,7 +808,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "gimTotalLevelMilestone",
 			name = "Total level broadcasts",
 			description = "Play a sound for group members reaching a new total level milestone.",
-			position = 64,
+			position = 65,
 			section = groupIronmanToggles
 	)
 	default boolean gimTotalLevelMilestone()
@@ -820,7 +820,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "gimXpMilestone",
 			name = "XP milestone broadcasts",
 			description = "Play a sound for group members reaching an XP milestone.",
-			position = 65,
+			position = 66,
 			section = groupIronmanToggles
 	)
 	default boolean gimXpMilestone()
@@ -832,7 +832,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "gimQuest",
 			name = "Quest broadcasts",
 			description = "Play a sound for group members completing a quest.",
-			position = 66,
+			position = 67,
 			section = groupIronmanToggles
 	)
 	default boolean gimQuest()
@@ -844,7 +844,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "gimDiary",
 			name = "Achievement diary broadcasts",
 			description = "Play a sound for group members completing an achievement diary task.",
-			position = 67,
+			position = 68,
 			section = groupIronmanToggles
 	)
 	default boolean gimDiary()
@@ -856,7 +856,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "gimCombatAchievementTier",
 			name = "Combat achievement tier broadcasts",
 			description = "Play a sound for group members completing a combat achievement tier.",
-			position = 68,
+			position = 69,
 			section = groupIronmanToggles
 	)
 	default boolean gimCombatAchievementTier()
@@ -868,7 +868,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "gimCombatAchievementTask",
 			name = "Combat achievement task broadcasts",
 			description = "Play a sound for group members completing a combat achievement task.",
-			position = 69,
+			position = 70,
 			section = groupIronmanToggles
 	)
 	default boolean gimCombatAchievementTask()
@@ -880,7 +880,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "gimPersonalBest",
 			name = "Personal best broadcasts",
 			description = "Play a sound for group members achieving a new personal best.",
-			position = 70,
+			position = 71,
 			section = groupIronmanToggles
 	)
 	default boolean gimPersonalBest()
@@ -892,7 +892,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "gimPvpKill",
 			name = "PvP kill broadcasts",
 			description = "Play a sound for group members killing another player.",
-			position = 71,
+			position = 72,
 			section = groupIronmanToggles
 	)
 	default boolean gimPvpKill()
@@ -904,7 +904,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "gimPvpDeath",
 			name = "PvP death broadcasts",
 			description = "Play a sound for group members dying to another player.",
-			position = 72,
+			position = 73,
 			section = groupIronmanToggles
 	)
 	default boolean gimPvpDeath()
@@ -916,7 +916,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "gimLeagues",
 			name = "Leagues broadcasts",
 			description = "Include leagues broadcasts.",
-			position = 73,
+			position = 74,
 			section = groupIronmanToggles
 	)
 	default boolean gimLeagues()
@@ -930,7 +930,7 @@ public interface ChatSoundsConfig extends Config
 	@ConfigSection(
 			name = "Trade Requests",
 			description = "Settings for trade requests.",
-			position = 74
+			position = 75
 	)
 	String tradeList = "tradeList";
 
@@ -938,7 +938,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "tradeRequest",
 			name = "Trade Request",
 			description = "The sound effect to use when receiving a trade request.",
-			position = 75,
+			position = 76,
 			section = tradeList
 	)
 	default ChatSoundsMode tradeRequest()
@@ -956,7 +956,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "tradeVolume",
 			name = "Trade Volume",
 			description = "Sets the volume of the chat message sound effect.",
-			position = 76,
+			position = 77,
 			section = tradeList
 	)
 	default int tradeVolume()
@@ -968,7 +968,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "tradeIgnorePlayers",
 			name = "Ignore player names",
 			description = "A comma-separated list of player names to never play a sound for.",
-			position = 77,
+			position = 78,
 			section = tradeList
 	)
 	default String tradeIgnorePlayersList()
@@ -982,7 +982,7 @@ public interface ChatSoundsConfig extends Config
 	@ConfigSection(
 			name = "Duel Requests",
 			description = "Settings for duel requests.",
-			position = 78
+			position = 79
 	)
 	String duelList = "duelList";
 
@@ -990,7 +990,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "duelRequest",
 			name = "Duel Request",
 			description = "The sound effect to use when receiving a duel request.",
-			position = 79,
+			position = 80,
 			section = duelList
 	)
 	default ChatSoundsMode duelRequest()
@@ -1008,7 +1008,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "duelVolume",
 			name = "Duel Volume",
 			description = "Sets the volume of the chat message sound effect.",
-			position = 80,
+			position = 81,
 			section = duelList
 	)
 	default int duelVolume()
@@ -1020,7 +1020,7 @@ public interface ChatSoundsConfig extends Config
 			keyName = "duelIgnorePlayers",
 			name = "Ignore player names",
 			description = "A comma-separated list of player names to never play a sound for.",
-			position = 81,
+			position = 82,
 			section = duelList
 	)
 	default String duelIgnorePlayersList()
