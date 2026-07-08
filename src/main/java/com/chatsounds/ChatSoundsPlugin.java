@@ -120,23 +120,27 @@ public class ChatSoundsPlugin extends Plugin
 	public void onChatMessage(ChatMessage chatMessage)
 	{
 		Player player = client.getLocalPlayer();
-		String playerName = player.getName() != null ? player.getName() : "";
+		String playerName = player != null && player.getName() != null ? player.getName() : "";
+		String cleanPlayerName = Text.sanitize(playerName);
 		String cleanName = Text.sanitize(chatMessage.getName());
 		ChatMessageType type = chatMessage.getType();
 
 		String msg = Text.standardize(chatMessage.getMessage());
 		String cleanMsg = Text.removeTags(msg);
+		String cleanBroadcastName = Text.sanitize(extractBroadcastPlayerName(cleanMsg));
 		String strippedMsg = stripPlayerName(cleanMsg);
 
 		// Turn off sounds for yourself or when not logged in.
 		if (player == null ||
 				client.getGameState() != GameState.LOGGED_IN ||
-				cleanName.equalsIgnoreCase(Text.sanitize(playerName))) {
+				cleanName.equalsIgnoreCase(cleanPlayerName) ||
+				cleanBroadcastName.equalsIgnoreCase(cleanPlayerName)) {
 			return;
 		}
 
 		// Turn off sounds for global settings.
-		if (shouldIgnorePlayer(allIgnored, cleanName) || config.allChats() == GlobalSoundsMode.ON) {
+		if (shouldIgnorePlayer(allIgnored, cleanName) || shouldIgnorePlayer(allIgnored, cleanBroadcastName) ||
+				config.allChats() == GlobalSoundsMode.ON) {
 			return;
 		}
 
@@ -167,6 +171,9 @@ public class ChatSoundsPlugin extends Plugin
 
 			case FRIENDSCHATNOTIFICATION:
 				BroadcastType chatChannelBroadcastType = BroadcastType.detect(strippedMsg);
+				if (shouldIgnorePlayer(chatChannelIgnored, cleanBroadcastName)) {
+					return;
+				}
 				if (chatChannelBroadcastType == BroadcastType.PLAYER_JOIN_LEAVE) {
 					if (config.chatChannelJoinLeave()) {
 						playSound(config.chatChannelBroadcast(), CS_CHAT_CHANNEL_BROADCAST, config.chatChannelVolume());
@@ -191,6 +198,9 @@ public class ChatSoundsPlugin extends Plugin
 					return;
 				}
 				BroadcastType clanBroadcastType = BroadcastType.detect(strippedMsg);
+				if (shouldIgnorePlayer(clanIgnored, cleanBroadcastName)) {
+					return;
+				}
 				if (shouldAlertClanBroadcastType(clanBroadcastType) && !msg.equals(CS_CLAN_MSG)) {
 					playSound(config.clanBroadcast(), CS_CLAN_BROADCAST, config.clanVolume());
 				}
@@ -206,6 +216,9 @@ public class ChatSoundsPlugin extends Plugin
 			case CLAN_GUEST_MESSAGE:
 				// Guest clan only has join/leave broadcasts afaik?
 				BroadcastType guestBroadcastType = BroadcastType.detect(strippedMsg);
+				if (shouldIgnorePlayer(guestClanIgnored, cleanBroadcastName)) {
+					return;
+				}
 				if (guestBroadcastType == BroadcastType.PLAYER_JOIN_LEAVE && config.guestClanJoinLeave() &&
 						!msg.equals(CS_CLAN_GUEST_MSG_1) && !msg.startsWith(CS_CLAN_GUEST_MSG_2) && !msg.equals(CS_CLAN_GUEST_MSG_3)) {
 					playSound(config.guestClanBroadcast(), CS_CLAN_GUEST_BROADCAST, config.guestClanVolume());
@@ -224,6 +237,9 @@ public class ChatSoundsPlugin extends Plugin
 					return;
 				}
 				BroadcastType gimBroadcastType = BroadcastType.detect(strippedMsg);
+				if (shouldIgnorePlayer(gimIgnored, cleanBroadcastName)) {
+					return;
+				}
 				if (shouldAlertGimBroadcastType(gimBroadcastType) && !msg.equals(CS_GIM_MSG)) {
 					playSound(config.gimBroadcast(), CS_GIM_BROADCAST, config.groupIronVolume());
 				}
@@ -264,6 +280,15 @@ public class ChatSoundsPlugin extends Plugin
 		return message;
 	}
 
+	private String extractBroadcastPlayerName(String message)
+	{
+		Matcher m = PLAYER_PREFIX.matcher(message);
+		if (m.find())
+		{
+			return message.substring(0, m.start(1)).trim();
+		}
+		return "";
+	}
 
 	// Returns true if the message is from an ignored player in the chat's type.
 	private boolean shouldIgnorePlayer(List<String> ignoreList, String name) {
