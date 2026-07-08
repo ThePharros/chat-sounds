@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -32,8 +34,6 @@ import net.runelite.client.util.Text;
 )
 public class ChatSoundsPlugin extends Plugin
 {
-	private static final String HAS_JOINED = " has joined.".toLowerCase();;
-	private static final String HAS_LEFT = " has left.".toLowerCase();;
 	private static final String CS_CHAT_CHANNEL_MSG_1 = "Attempting to join chat-channel...".toLowerCase();
 	private static final String CS_CHAT_CHANNEL_MSG_2 = "Now talking in chat-channel ".toLowerCase();
 	private static final String CS_CHAT_CHANNEL_MSG_3 = "To talk, start each line of chat with the / symbol.".toLowerCase();
@@ -42,13 +42,19 @@ public class ChatSoundsPlugin extends Plugin
 	private static final String CS_CLAN_GUEST_MSG_2 = "To talk, start each line of chat with /// or /gc.".toLowerCase();
 	private static final String CS_CLAN_GUEST_MSG_3 = "Attempting to reconnect to guest channel automatically...".toLowerCase();
 	private static final String CS_GIM_MSG = "To talk in your Ironman Group's channel, start each line of chat with //// or /g.".toLowerCase();
+	private static final String CS_LEAGUES_MSG = "<img=22>";
+	private static final Pattern PLAYER_PREFIX =
+			Pattern.compile(
+					"^.+?\\s+(has|have|been|achieved|acquired|reached|received|lost|unlocked|completed)\\b",
+					Pattern.CASE_INSENSITIVE
+			);
 
 	private static final File CS_DIR = new File(RuneLite.RUNELITE_DIR.getPath() + File.separator + "chat-sounds");
 	private static final File CS_DEFAULT = new File(CS_DIR, "cs_default.wav");
 	private static final File CS_PUBLIC = new File(CS_DIR, "cs_public.wav");
 	private static final File CS_PRIVATE = new File(CS_DIR, "cs_private.wav");
 	private static final File CS_CHAT_CHANNEL = new File(CS_DIR,"cs_chat_channel.wav");
-	private static final File CS_CHAT_CHANNEL_BROADCAST = new File(CS_DIR, "cs_chat_channel_broadcast.wave");
+	private static final File CS_CHAT_CHANNEL_BROADCAST = new File(CS_DIR, "cs_chat_channel_broadcast.wav");
 	private static final File CS_CLAN = new File(CS_DIR, "cs_clan.wav");
 	private static final File CS_CLAN_BROADCAST = new File(CS_DIR, "cs_clan_broadcast.wav");
 	private static final File CS_CLAN_GUEST = new File(CS_DIR, "cs_clan_guest.wav");
@@ -114,20 +120,27 @@ public class ChatSoundsPlugin extends Plugin
 	public void onChatMessage(ChatMessage chatMessage)
 	{
 		Player player = client.getLocalPlayer();
-		String playerName = player.getName() != null ? player.getName() : "";
+		String playerName = player != null && player.getName() != null ? player.getName() : "";
+		String cleanPlayerName = Text.sanitize(playerName);
 		String cleanName = Text.sanitize(chatMessage.getName());
 		ChatMessageType type = chatMessage.getType();
+
 		String msg = Text.standardize(chatMessage.getMessage());
+		String cleanMsg = Text.removeTags(msg);
+		String cleanBroadcastName = Text.sanitize(extractBroadcastPlayerName(cleanMsg));
+		String strippedMsg = stripPlayerName(cleanMsg);
 
 		// Turn off sounds for yourself or when not logged in.
 		if (player == null ||
 				client.getGameState() != GameState.LOGGED_IN ||
-				cleanName.equalsIgnoreCase(Text.sanitize(playerName))) {
+				cleanName.equalsIgnoreCase(cleanPlayerName) ||
+				cleanBroadcastName.equalsIgnoreCase(cleanPlayerName)) {
 			return;
 		}
 
 		// Turn off sounds for global settings.
-		if (shouldIgnorePlayer(allIgnored, cleanName) || config.allChats() == GlobalSoundsMode.ON) {
+		if (shouldIgnorePlayer(allIgnored, cleanName) || shouldIgnorePlayer(allIgnored, cleanBroadcastName) ||
+				config.allChats() == GlobalSoundsMode.ON) {
 			return;
 		}
 
@@ -157,8 +170,17 @@ public class ChatSoundsPlugin extends Plugin
 				break;
 
 			case FRIENDSCHATNOTIFICATION:
-				if (shouldAlertOnJoinOrLeft(msg, config.chatChannelIgnoreJoinLeave()) &&
-						!msg.equals(CS_CHAT_CHANNEL_MSG_1) && !msg.startsWith(CS_CHAT_CHANNEL_MSG_2) &&
+				BroadcastType chatChannelBroadcastType = BroadcastType.detect(strippedMsg);
+				if (shouldIgnorePlayer(chatChannelIgnored, cleanBroadcastName)) {
+					return;
+				}
+				if (chatChannelBroadcastType == BroadcastType.PLAYER_JOIN_LEAVE) {
+					if (config.chatChannelJoinLeave()) {
+						playSound(config.chatChannelBroadcast(), CS_CHAT_CHANNEL_BROADCAST, config.chatChannelVolume());
+					}
+					return;
+				}
+				else if (!msg.equals(CS_CHAT_CHANNEL_MSG_1) && !msg.startsWith(CS_CHAT_CHANNEL_MSG_2) &&
 						!msg.equals(CS_CHAT_CHANNEL_MSG_3)) {
 					playSound(config.chatChannelBroadcast(), CS_CHAT_CHANNEL_BROADCAST, config.chatChannelVolume());
 				}
@@ -172,7 +194,14 @@ public class ChatSoundsPlugin extends Plugin
 				break;
 
 			case CLAN_MESSAGE:
-				if (shouldAlertOnJoinOrLeft(msg, config.clanIgnoreJoinLeave()) && !msg.equals(CS_CLAN_MSG)) {
+				if (msg.contains(CS_LEAGUES_MSG) && !config.clanLeagues()) {
+					return;
+				}
+				BroadcastType clanBroadcastType = BroadcastType.detect(strippedMsg);
+				if (shouldIgnorePlayer(clanIgnored, cleanBroadcastName)) {
+					return;
+				}
+				if (shouldAlertClanBroadcastType(clanBroadcastType) && !msg.equals(CS_CLAN_MSG)) {
 					playSound(config.clanBroadcast(), CS_CLAN_BROADCAST, config.clanVolume());
 				}
 				break;
@@ -185,9 +214,13 @@ public class ChatSoundsPlugin extends Plugin
 				break;
 
 			case CLAN_GUEST_MESSAGE:
-				if (shouldAlertOnJoinOrLeft(msg, config.guestClanIgnoreJoinLeave()) &&
-						!msg.startsWith(CS_CLAN_GUEST_MSG_1) && !msg.endsWith(CS_CLAN_GUEST_MSG_2) &&
-						!msg.equals(CS_CLAN_GUEST_MSG_3)) {
+				// Guest clan only has join/leave broadcasts afaik?
+				BroadcastType guestBroadcastType = BroadcastType.detect(strippedMsg);
+				if (shouldIgnorePlayer(guestClanIgnored, cleanBroadcastName)) {
+					return;
+				}
+				if (guestBroadcastType == BroadcastType.PLAYER_JOIN_LEAVE && config.guestClanJoinLeave() &&
+						!msg.equals(CS_CLAN_GUEST_MSG_1) && !msg.startsWith(CS_CLAN_GUEST_MSG_2) && !msg.equals(CS_CLAN_GUEST_MSG_3)) {
 					playSound(config.guestClanBroadcast(), CS_CLAN_GUEST_BROADCAST, config.guestClanVolume());
 				}
 				break;
@@ -200,7 +233,14 @@ public class ChatSoundsPlugin extends Plugin
 				break;
 
 			case CLAN_GIM_MESSAGE:
-				if (!msg.equals(CS_GIM_MSG)) {
+				if (msg.contains(CS_LEAGUES_MSG) && !config.gimLeagues()) {
+					return;
+				}
+				BroadcastType gimBroadcastType = BroadcastType.detect(strippedMsg);
+				if (shouldIgnorePlayer(gimIgnored, cleanBroadcastName)) {
+					return;
+				}
+				if (shouldAlertGimBroadcastType(gimBroadcastType) && !msg.equals(CS_GIM_MSG)) {
 					playSound(config.gimBroadcast(), CS_GIM_BROADCAST, config.groupIronVolume());
 				}
 				break;
@@ -230,20 +270,124 @@ public class ChatSoundsPlugin extends Plugin
 		}
 	}
 
+	private String stripPlayerName(String message)
+	{
+		Matcher m = PLAYER_PREFIX.matcher(message);
+		if (m.find())
+		{
+			return message.substring(m.start(1));
+		}
+		return message;
+	}
+
+	private String extractBroadcastPlayerName(String message)
+	{
+		Matcher m = PLAYER_PREFIX.matcher(message);
+		if (m.find())
+		{
+			return message.substring(0, m.start(1)).trim();
+		}
+		return "";
+	}
+
 	// Returns true if the message is from an ignored player in the chat's type.
 	private boolean shouldIgnorePlayer(List<String> ignoreList, String name) {
 		return ignoreList.stream().anyMatch(s -> s.equalsIgnoreCase(name));
     }
 
-	// Returns false if it is not a "join" or "left" message. If it is one, returns true if ignore is
-	// not checked, false if it is checked.
-	private boolean shouldAlertOnJoinOrLeft(String text, boolean ignore) {
-		if (!text.endsWith(HAS_JOINED) && !text.endsWith(HAS_LEFT)) {
-			return false;
+	private boolean shouldAlertClanBroadcastType(BroadcastType type)
+	{
+		switch (type)
+		{
+			case PLAYER_JOIN_LEAVE:
+				return config.clanJoinLeave();
+			case CLAN_INVITATION:
+				return config.clanNewMember();
+			case CLAN_EXPULSION:
+				return config.clanExpelledMember();
+			case RARE_DROP:
+				return config.clanRareDrop();
+			case RAID_LOOT:
+				return config.clanRaidLoot();
+			case REGULAR_DROP:
+				return config.clanRegularDrop();
+			case CLUE_LOOT:
+				return config.clanClueLoot();
+			case PET:
+				return config.clanPetDrop();
+			case COLLECTION_LOG:
+				return config.clanCollectionLog();
+			case LEVEL_UP:
+				return config.clanLevelUp();
+			case COMBAT_LEVEL_UP:
+				return config.clanCombatLevel();
+			case TOTAL_LEVEL_MILESTONE:
+				return config.clanTotalLevelMilestone();
+			case XP_MILESTONE:
+				return config.clanXpMilestone();
+			case QUEST_COMPLETE:
+				return config.clanQuest();
+			case ACHIEVEMENT_DIARY:
+				return config.clanDiary();
+			case COMBAT_ACHIEVEMENT_TIER:
+				return config.clanCombatAchievementTier();
+			case COMBAT_ACHIEVEMENT_TASK:
+				return config.clanCombatAchievementTask();
+			case PERSONAL_BEST:
+				return config.clanPersonalBest();
+			case PLAYER_KILL:
+				return config.clanPvpKill();
+			case PLAYER_DEATH:
+				return config.clanPvpDeath();
+			case HARDCORE_DEATH:
+				return config.clanHardcoreDeath();
+			default:
+				return false;
 		}
+	}
 
-        return !ignore;
-    }
+	private boolean shouldAlertGimBroadcastType(BroadcastType type)
+	{
+		switch (type)
+		{
+			case RARE_DROP:
+				return config.gimRareDrop();
+			case RAID_LOOT:
+				return config.gimRaidLoot();
+			case REGULAR_DROP:
+				return config.gimRegularDrop();
+			case CLUE_LOOT:
+				return config.gimClueLoot();
+			case PET:
+				return config.gimPetDrop();
+			case COLLECTION_LOG:
+				return config.gimCollectionLog();
+			case LEVEL_UP:
+				return config.gimLevelUp();
+			case COMBAT_LEVEL_UP:
+				return config.gimCombatLevel();
+			case TOTAL_LEVEL_MILESTONE:
+				return config.gimTotalLevelMilestone();
+			case XP_MILESTONE:
+				return config.gimXpMilestone();
+			case QUEST_COMPLETE:
+				return config.gimQuest();
+			case ACHIEVEMENT_DIARY:
+				return config.gimDiary();
+			case COMBAT_ACHIEVEMENT_TIER:
+				return config.gimCombatAchievementTier();
+			case COMBAT_ACHIEVEMENT_TASK:
+				return config.gimCombatAchievementTask();
+			case PERSONAL_BEST:
+				return config.gimPersonalBest();
+			case PLAYER_KILL:
+				return config.gimPvpKill();
+			case PLAYER_DEATH:
+				return config.gimPvpDeath();
+			default:
+				return false;
+		}
+	}
 
 	private void initSoundFiles()
 	{
