@@ -3,7 +3,6 @@ package com.chatsounds;
 import com.google.inject.Provides;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -11,8 +10,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
@@ -430,7 +427,7 @@ public class ChatSoundsPlugin extends Plugin
 			f = mode.equals(ChatSoundsMode.DEFAULT) ? CS_DEFAULT : f;
 			audioPlayer.play(f, linearTodB(volume));
 		}
-		catch (LineUnavailableException | UnsupportedAudioFileException | IOException e)
+		catch (Exception e)
 		{
 			log.warn("ChatSoundsPlugin::playSound() error!", e);
 		}
